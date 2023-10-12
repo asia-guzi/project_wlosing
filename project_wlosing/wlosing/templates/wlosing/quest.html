@@ -1,0 +1,36 @@
+{% extends "wlosing/layout.html" %}
+
+
+{% block body %}
+
+    {% if info %}
+        <div>{{info}}</div>
+
+    {% endif %}
+   
+    <div>
+
+        <form method="post" action="{% url 'wlosing:quest' %}">
+
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input class="btn btn-secondary" type="submit" value="Zapisz">
+ 
+        </form>
+
+    </div>
+
+
+
+        
+        
+       
+
+        
+            
+            
+
+
+
+
+{% endblock %}

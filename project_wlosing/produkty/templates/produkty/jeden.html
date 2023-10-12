@@ -1,0 +1,24 @@
+
+{% extends "wlosing/layout.html" %}
+
+{% block body %}
+
+    <div>
+    <p>{{name}}</p>
+    </div>
+    <div>
+
+        <p>[informacje o kosmetyku - blok w budowie]</p>
+    </div>
+    <div>
+
+        <form action="{% url 'produkty:jeden' '{{name}}' %}" method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            
+            <input class="btn btn-secondary" type="submit" value="Zasil swoją kosmetyczkę">
+        </form>
+
+    </div>
+
+{% endblock %}

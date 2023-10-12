@@ -1,0 +1,29 @@
+{% extends "wlosing/layout.html" %}
+
+{% block body %}
+
+    <h1>Logowanie:</h1>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+ 
+    <div>
+        <form action="{% url 'users:login' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Nazwa użytkownika">
+            <input type="password" name="password" placeholder="Hasło">
+           
+            <input class="btn btn-secondary" type="submit" value="Zaloguj">
+        </form>
+    </div>
+
+    {% if message %}
+        <div>
+            <h1>Nie jesteś jeszcze włosomaniaczką?</h1>
+            <a class="btn btn-secondary" href="{% url 'users:signup' %}" role="button">Załóż konto</a>
+
+        </div>
+    {% endif %}
+{% endblock %}

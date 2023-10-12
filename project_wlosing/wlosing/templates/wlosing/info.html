@@ -1,0 +1,105 @@
+{% extends "wlosing/layout.html" %}
+
+{% block body %}
+
+
+
+<div class="container-fluid">
+    <div class="row justify-content-end g-3">
+
+        <div class="col-12">
+          
+            <div container-fluid>
+                <h2>Zalogowano jako {{ name }}.</h2>
+            </div>
+
+        </div>
+
+        {% if message %}
+        <div class="col-12">
+          
+            <div container-fluid>
+                <h5>{{ message }}</h5>
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <div class="col-4">
+            {% if info %}
+                <p>{{info}}</p>
+                <p><a class="btn btn-secondary" href="{% url 'wlosing:quest' %}" role="button">Zmień</a></p>
+            {% elif opcja %}
+                <p>{{opcja}}</p>
+                <p>
+                    <div class="d-grid gap-2">
+
+                        <a class="btn btn-secondary" href="{% url 'wlosing:quest' %}" role="button">Dodaj</a>
+                    </div>
+                    
+                </p>
+            {% endif %}
+
+        </div>
+
+        {% if kosmetyki %}
+
+            <div class="col-8 text-center">
+                
+                    <h4>W Twojej kosmetyczce znajdują się:</h4>
+
+            </div>
+
+            <div class="col-8 ">
+
+                <div class="list-group">
+                    <div class="row justify-content-center g-3">
+
+                        
+                        
+                            {% for k in kosmetyki %}
+
+                                <div class="col-6"> 
+                                    <a href="{% url 'produkty:jeden' k %}" class="list-group-item list-group-item-action">{{k}}</a>
+
+                                </div>
+                            {% endfor %} 
+
+                        <div class="col-12 text-center">
+                                
+                            <a class="btn btn-secondary" href="{% url 'produkty:index' %}" role="button">Zasil kosmeyczkę</a> 
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+
+        {% else %}
+
+            <div class="col-8 text-center">
+                                                
+                <h4>Twoja kosmetyczka niestety jest pusta!</h4>
+            </div>
+
+                                            
+                                                
+
+            <div class="col-8">
+                <a class="btn btn-secondary" href="{% url 'produkty:index' %}" role="button">Zasil kosmeyczkę</a> 
+
+            </div>
+
+        {% endif %}
+
+        
+        <div class="col-12">
+            <a class="btn btn-secondary" href="{% url 'users:logout' %}" role="button">Wyloguj</a>
+        </div>  
+    </div>
+
+</div>
+
+
+{% endblock %}

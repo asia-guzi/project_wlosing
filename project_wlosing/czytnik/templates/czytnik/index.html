@@ -1,0 +1,24 @@
+
+{% extends "wlosing/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row justify-content-start g-3 text-start">
+        <div class="col-12">
+            <h1>Odkryj tajemne znaczenie składów kosmetyków:</h1>
+        </div>
+        <div class="col-12">
+            Twój włosing nigdy wcześniej nie był łatwiejszy. Sprawdź co się kryje w składzie INCI Twojego kosmetyku!
+        </div>
+        <div class="col-5">
+            <a class="btn btn-secondary" href="{% url 'produkty:index' %}" role="button">Zobacz czy Twój kosmetyk jest już w naszej bazie</a>
+        </div>
+        <div class="col-3">
+            <a class="btn btn-secondary" href="{% url 'czytnik:tlumacz' %}" role="button">Przetłumacz skład</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
