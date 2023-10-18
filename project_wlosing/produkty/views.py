@@ -1,8 +1,8 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponseRedirect
-from .forms import RdzForm, SzamponForm, OdżywkaForm, WcierkaForm, MaskaForm, PeelingForm, ŻelForm, PiankaForm, KremForm, OlejekForm, OlejForm #UzForm, 
+from .forms import RdzForm, SzamponForm, OdżywkaForm, WcierkaForm, MaskaForm, PeelingForm, ŻelForm, PiankaForm, KremForm, OlejekForm, OlejForm 
 
-from .models import Kosmetyk, Szampon, Odżywka, Wcierka, Maska, Peeling, Żel, Pianka, Krem, Olejek, Olej, Rdz
+from produkty.models import Kosmetyk, Szampon, Odżywka, Wcierka, Maska, Peeling, Żel, Pianka, Krem, Olejek, Olej, Rdz, workingsKosmetyk
 from django import forms
 from wlosing.models import Włosy
 from wlosing.views import get_info
@@ -10,281 +10,339 @@ from wlosing.views import get_info
  
 
 
-def lista_ustal(r):
-
-    try: 
-        if r == "Szampon":
-            x = Szampon.szampon_list()
-        if r == "Odżywka":
-            x =  Odżywka.odżywka_list()
-        if r == "Maska":
-            x =  Maska.maska_list()
-        if r == "Wcierka":
-            x =  Wcierka.wcierka_list()
-        if r == "Pianka":
-            x =  Pianka.pianka_list()
-        if r == "Żel":
-            x =  Żel.żel_list()
-        if r == "Krem":
-            x =  Krem.krem_list()
-        if r == "Peeling":
-            x =  Peeling.peeling_list()
-        if r == "Olej":
-            x =  Olej.peeling_list()
-        if r == "Olejek":
-            x =  Olejek.peeling_list()
-    except:
-        return []
-      
-    return x
-
 
 def wydziel(x):
     
-       y = x.split(", ")
-       
-       return  y[-1]
+        """
+        Extracts the last element from a comma-separated string.
+        
+        This function takes a comma-separated string (string representation of cosmetics list "Marka, Nazwa" and extracts the last element, which is name (Nazwa).
+        
+        Parameters:
+        x (str): The comma-separated string.
+        
+        Returns:
+        str: The last element from the comma-separated string or a string itself (if no separator inside) - that is the cosmetic's name.
+        """
+    
+        y = x.split(", ")
+               
+        return  y[-1]
 
    
 def zmienna_ustal(d):
     
+        """
+        Determines product categories and their respective lists.
+        
+        This function determines product categories and their respective lists by iterating through available categories.
+        It uses the `lista_ustal` function to retrieve the product list for each category.
+        
+        Parameters:
+        d (dict): A dictionary to store product categories and their respective lists 
+        (initial elements od dictionary in the end are also shown on the view).
+        
+        Returns:
+        dict: A dictionary representing all cosmetics ever added to the project. 
+        It contains product categories as keys and their respective lists as values.
+        """
+    
         for r in Rdz.rdz_list():
              
-                v = lista_ustal(r)
+                v = Kosmetyk.kosmetyk_list(r)
                 
                 if v != []:
                     d[r] = v
+                
         return d
             
+def ustal_form(r):
+        """
+        Determines the appropriate form based on the given category.
+    
+        This function determines the appropriate form based on the given product category.
+        
+        Parameters:
+        r (str): The product category.
+    
+        Returns:
+        Form: An instance of the specific form based on the provided category.
+        """
+        form_mapping = {
+            "Szampon": SzamponForm(),
+            "Odżywka": OdżywkaForm(),
+            "Maska": MaskaForm(),
+            "Wcierka": WcierkaForm(),
+            "Pianka": PiankaForm(),
+            "Żel": ŻelForm(),
+            "Krem": KremForm(),
+            "Peeling": PeelingForm(),
+            "Olej": OlejForm(),
+            "Olejek": OlejekForm()
+        }
+        
+        
+    
+        return form_mapping[r]
             
 
-def ustal_form(r):
-    if r == "Szampon":
-        return SzamponForm()
-    if r == "Odżywka":
-        return OdżywkaForm()
-    if r == "Maska":
-        return MaskaForm()
-    if r == "Wcierka":
-        return WcierkaForm()
-    if r == "Olejek":
-        return OlejekForm()
-    if r == "Olej":
-        return OlejForm()
-    if r == "Żel":
-        return ŻelForm()
-    if r == "Pianka":
-        return PiankaForm()
-    if r == "Krem":
-        return KremForm()
-    if r == "Peeling":
-        return PeelingForm()
 
 
 def obecnosc_ustal(r, n):
-    if r == "Szampon":
-        return Szampon.objects.get(Nazwa=n)
-   
-    if r == "Odżywka":
-        return n in Odżywka.objects.get(Nazwa=n)
-    if r == "Maska":
-        return n in Maska.objects.get(Nazwa=n)
-    if r == "Wcierka":
-        return n in Wcierka.objects.get(Nazwa=n)
-    if r == "Olejek":
-        return n in Olejek.objects.get(Nazwa=n)
-    if r == "Olej":
-        return n in Olej.objects.get(Nazwa=n)
-    if r == "Żel":
-        return n in Żel.objects.get(Nazwa=n)
-    if r == "Pianka":
-        return n in Pianka.objects.get(Nazwa=n)
-    if r == "Krem":
-        return n in Krem.objects.get(Nazwa=n)
-    if r == "Peeling":
-        return n in Peeling.objects.get(Nazwa=n)
+    
+        """
+        Determines if an object defined by the given name already exists in the database.
+        
+        This function determines if the product has already been added to the database based on the given product name.
+        
+        Parameters:
+        r (str): The product category.
+        n (str): The product name.
+    
+        Returns:
+        True if product already exists in database and False if it is new.
+        """
+        
+        
+        
+        try:
+            n_mapping = {
+          "Szampon": Szampon.objects.get(Nazwa=n),
+          "Odżywka": Odżywka.objects.get(Nazwa=n),
+          "Maska": Maska.objects.get(Nazwa=n),
+          "Wcierka": Wcierka.objects.get(Nazwa=n),
+          "Pianka": Pianka.objects.get(Nazwa=n),
+          "Żel": Żel.objects.get(Nazwa=n),
+          "Krem": Krem.objects.get(Nazwa=n),
+          "Peeling": Peeling.objects.get(Nazwa=n),
+          "Olej": Olej.objects.get(Nazwa=n),
+          "Olejek": Olejek.objects.get(Nazwa=n),
+            }
+            
+            x= n_mapping[r]
+        except: 
+            return False
+        return True
+
 
 
 def index(request):
- 
-    if request.method == "POST":
-        form=RdzForm(request.POST)
-        if form.is_valid():
-            r=request.POST["Rdz"]
-            request.session["r"]= r
-            
-             
-            return render(request,"produkty/addk.html",{"form" : ustal_form(r)})
-        else:
-        
-            
-            return render(request,"produkty/indexcopy.html", 
-                zmienna_ustal( {
-                "info": "Upsss... coś poszło nie tak",
-                "form": RdzForm(),
-                }))
+    
+        """
+         Handles the basic cosmetics collection view.
+         
+         
+         This function shows the basic cosmetics collection view.
+         It creates the variable r assigned to the session which represents the product category.
+         It also allows authenticated users to start adding new product to the database based on session variable.
+         
+         Parameters:
+         request (HttpRequest): The HTTP request object.
+         
+         Returns:
+         HttpResponse: The HTTP response to be displayed.
+         
+         """
+     
+        if request.method == "POST":
+            form=RdzForm(request.POST)
+            if form.is_valid():
+                r=request.POST["Rdz"]
+                request.session["r"]= r
+                
                  
-    else:
+                return render(request,"produkty/addk.html",{"form" : ustal_form(r)})
+            else:
             
-        varia = zmienna_ustal({"form" : RdzForm()})       
-        return render(request, "produkty/indexcopy.html", varia )
-                      
-           
+                
+                return render(request,"produkty/indexcopy.html", 
+                    zmienna_ustal( {
+                    "info": "Upsss... coś poszło nie tak",
+                    "form": RdzForm(),
+                    }))
+                     
+        else:
+                
+            varia = zmienna_ustal({"form" : RdzForm()})       
+            return render(request, "produkty/indexcopy.html", varia )
+                          
+               
 
 def addk(request): 
-    
-    if not request.user.is_authenticated:
-        return render(request, "users/login.html", {
-            "message" : "Zaloguj się, aby dodać produkt do bazy"
-            })
-    
-    try: 
-        "r" in request.session
+   
+        """
+        Handles adding new cosmetics to the database.
         
-    except:
-                  
-        return render(request,"produkty/indexcopy.html", {
-            "form": RdzForm(),
-            "info": "Error - brak rodzaju"
-            })
+        
+        This function  allows authenticated users to add the new cosmetic to database.
+        It check if the session variable "r" exists within the session.
+        Than the obecnosc_ustal() function is used to verify if the cosmetics has been already added.
+        If given conditions are fulfilled the new cosmetic is added.
+        
+        Parameters:
+        request (HttpRequest): The HTTP request object.
+        
+        Returns:
+        HttpResponse: The HTTP response to be displayed.
+        
+        """
     
-    r = request.session["r"]
-
-            
-    if request.method == "POST":
-        x = request.POST["Nazwa"]
-       
-        try:
-            obecnosc_ustal(r, x)
-            
-            return render(request, "produkty/indexcopy.html", {
-                            "form": RdzForm(),
-                            "info": f"Upsss... Ten kosmetyk ({x})jest już w naszej bazie. Możesz zasilić nim swoją kosmetyczkę"})
+        if not request.user.is_authenticated:
+            return render(request, "users/login.html", {
+                "message" : "Zaloguj się, aby dodać produkt do bazy"
+                })
+        
+        try: 
+            "r" in request.session
             
         except:
-            pass
-    
-        
-        if r == "Szampon":
-            
-            q = SzamponForm(request.POST)
-                 
-        elif r == "Odżywka":
-            q = OdżywkaForm(request.POST)
-           
-        elif r == "Maska":
-            q = MaskaForm(request.POST)
-                    
-        elif r == "Wcierka":
-            q = WcierkaForm(request.POST)
-           
-        elif r == "Olejek":
-            q =  OlejekForm(request.POST)
-            
-        elif r == "Olej":
-            q =  OlejForm(request.POST)
-             
-        elif r == "Żel":
-            q =  ŻelForm(request.POST)
-            
-        elif r == "Pianka":
-            q =  PiankaForm(request.POST)
-            
-        elif r == "Krem":
-            q =  KremForm(request.POST)
-            
-        elif r == "Peeling":
-            q = PeelingForm(request.POST)
-            
-        else: 
-             return render(request,"produkty/addk.html", {
-                 "form": ustal_form(request.session["r"]),
-                 "info": "Upsss... coś poszło nie tak"})
-            
-        
-            
-        if q.is_valid():
-           pass
-     
-        else: 
-             return render(request,"produkty/addk.html", {
-                 "form": ustal_form(r),
-                 "info": "Upsss... coś poszło nie tak"})
-        
-        k = q.save()
-        k.set_Owner(request.user)
-        k.save()
-
-        varia = zmienna_ustal({"form" : RdzForm(),"info" : "Baza zasilona", })
-       
-        return render(request, "produkty/indexcopy.html", varia )
-       
-            
-        
-    else:
-       
-        return render(request,"produkty/add.html", {
-            "form": ustal_form(r),
-            "info": "nie ta metoda"
-          })
-    
-def jeden(request, Nazwa):
-    
-    if not request.user.is_authenticated:
-            return render(request, "users/login.html", {
-                "message" : "Zaloguj się, aby dodać produkt do swojej kosmetyczki"
+                      
+            return render(request,"produkty/indexcopy.html", {
+                "form": RdzForm(),
+                "info": "Error - brak rodzaju"
                 })
+        
+        r = request.session["r"]
     
-    class Roboczy (forms.Form):
-        N = forms.CharField(widget=forms.HiddenInput(), initial= Nazwa)
-    
-    
-    if request.method=="POST":
-        form=Roboczy(request.POST)
-        if form.is_valid():
-            nazwa = wydziel(request.POST["N"])
-            Owner = request.user
+                
+        if request.method == "POST":
+            x = request.POST["Nazwa"]
             
+            
+           
+            try:
+                obecnosc_ustal(r,x) == True
+                                
+                return render(request, "produkty/indexcopy.html", zmienna_ustal(
+                              {
+                                "form": RdzForm(),
+                                "info": f"Upsss... Ten kosmetyk ({x}) jest już w naszej bazie. Możesz zasilić nim swoją kosmetyczkę"}))
+                
+            except:
+                print("false1")
+                
+                pass
             try:
             
-                Owner.wKosmetyczce.get(Nazwa=nazwa)
+                post_mapping = {
+                    "Szampon": SzamponForm(request.POST),
+                    "Odżywka": OdżywkaForm(request.POST),
+                    "Maska": MaskaForm(request.POST),
+                    "Wcierka": WcierkaForm(request.POST),
+                    "Pianka": PiankaForm(request.POST),
+                    "Żel": ŻelForm(request.POST),
+                    "Krem": KremForm(request.POST),
+                    "Peeling": PeelingForm(request.POST),
+                    "Olej": OlejForm(request.POST),
+                    "Olejek": OlejekForm(request.POST)
+                }
+                
+                q = post_mapping[r]
+                
+            except:
+            
+                 return render(request,"produkty/addk.html", {
+                     "form": ustal_form(request.session["r"]),
+                     "info": "Upsss... coś poszło nie tak"})
+                
+            
+                
+            if q.is_valid():
+               pass
+         
+            else: 
+                 return render(request,"produkty/addk.html", {
+                     "form": ustal_form(r),
+                     "info": "Upsss... coś poszło nie tak"})
+            
+            k = q.save()
+            k.set_Owner(request.user)
+            k.save()
+            workingsKosmetyk.set_work(k)
+    
+            varia = zmienna_ustal({"form" : RdzForm(),"info" : "Baza zasilona", })
+           
+            return render(request, "produkty/indexcopy.html", varia )
+           
+            
+        else:
+           
+            return render(request,"produkty/add.html", {
+                "form": ustal_form(r),
+                "info": "nie ta metoda"
+              })
+        
+def jeden(request, Nazwa):
+    
+        """
+        Handles adding a product to the user's cosmetic collection.
+    
+        This function allows authenticated users to add a product to their cosmetic collection.
+    
+        Parameters:
+        request (HttpRequest): The HTTP request object.
+        Nazwa (str): The product name.
+    
+        Returns:
+        HttpResponse: The HTTP response to be displayed (the view unique based on cosmetics name).
+        """
+        
+        if not request.user.is_authenticated:
+                return render(request, "users/login.html", {
+                    "message" : "Zaloguj się, aby dodać produkt do swojej kosmetyczki"
+                    })
+        
+        class Roboczy (forms.Form):
+            N = forms.CharField(widget=forms.HiddenInput(), initial= Nazwa)
+        
+        
+        if request.method=="POST":
+            form=Roboczy(request.POST)
+            if form.is_valid():
+                nazwa = wydziel(request.POST["N"])
+                Owner = request.user
+                
+                try:
+                
+                    Owner.wKosmetyczce.get(Nazwa=nazwa)
+                    info = get_info(Owner, request)
+                    kosmetyczka = Kosmetyk.objects.filter(Owner = Owner)
+                
+                    return render(request, "wlosing/info.html", {
+                        "message" : "Sprawdź dokładniej, ten kosmetyk znajduje się już w Twojej koametyczce.",
+                        "name" : Owner,
+                        "info" : info,
+                        "kosmetyki" : kosmetyczka,
+                        })
+                               
+                except:
+                        pass
+                        
+                    
+                q = Kosmetyk.objects.get(Nazwa=nazwa)
+                q.set_Owner(Owner)
+                q.save()
+                
+                
                 info = get_info(Owner, request)
                 kosmetyczka = Kosmetyk.objects.filter(Owner = Owner)
-            
-                return render(request, "wlosing/info.html", {
-                    "message" : "Sprawdź dokładniej, ten kosmetyk znajduje się już w Twojej koametyczce.",
-                    "name" : Owner,
-                    "info" : info,
-                    "kosmetyki" : kosmetyczka,
-                    })
-                           
-            except:
-                    pass
+                
+                """tbc - zmiana wszedzie na x = Owner.wKosmetyczce.all()"""
+    
                     
-                
-            q = Kosmetyk.objects.get(Nazwa=nazwa)
-            q.set_Owner(Owner)
-            q.save()
+            return render(request, "wlosing/info.html", {
+                "message" : "Gratulacje, Kosmetyczka zasilona!",
+                "name" : Owner,
+                "info" : info,
+                "kosmetyki" : kosmetyczka,
+                })
             
-            
-            info = get_info(Owner, request)
-            kosmetyczka = Kosmetyk.objects.filter(Owner = Owner)
-            
-            """tbc - zmiana wszedzie na x = Owner.wKosmetyczce.all()"""
-
-                
-        return render(request, "wlosing/info.html", {
-            "message" : "Gratulacje, Kosmetyczka zasilona!",
-            "name" : Owner,
-            "info" : info,
-            "kosmetyki" : kosmetyczka,
+        else:
+            name = wydziel(Nazwa)
+            name.capitalize()
+            return render(request, "produkty/jeden.html", {
+            "name": name,
+            "form": Roboczy(),
+           
+          
             })
-        
-    else:
-        name = wydziel(Nazwa)
-        name.capitalize()
-        return render(request, "produkty/jeden.html", {
-        "name": name,
-        "form": Roboczy(),
-      
-        })

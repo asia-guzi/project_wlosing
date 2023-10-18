@@ -19,9 +19,9 @@ from django.http import HttpResponseRedirect
 class Włosy(models.Model):
   
         DŁUGOŚĆ_CHOICES = [
-            ("Krótkie - do ramion", "Krótkie - do ramion"),
-            ("Średnie - za ramiona", "Średnie - za ramiona"),
-            ("Długie - za łopatki", "Długie - za łopatki"),
+            ("Krótkie", "Krótkie - do ramion"),
+            ("Średnie", "Średnie - za ramiona"),
+            ("Długie", "Długie - za łopatki"),
             ]
 
         KOLOR_CHOICES = [
@@ -43,11 +43,50 @@ class Włosy(models.Model):
             ("Afro", "Afro - typ 4"),
             ]
         
+        
+        
+        
+        # input:
+        # DŁUGOŚĆ_CHOICES = [
+        #     "Krótkie",
+        #     "Średnie",
+        #     "Długie",
+        #     ]
+
+        # KOLOR_CHOICES = [
+        #     "Blond",
+        #     "Szatynka", 
+        #     "Brunetka", 
+        #     "Rude", 
+        #     ]
+        # POROWATOŚĆ_CHOICES = [
+        #     "Wysokoporowate", 
+        #     "Średnioporowate", 
+        #     "Niskoporowate", 
+        #     ]
+        # TYP_CHOICES = [
+        #     "Proste",
+        #     "Falowane",
+        #     "Wurly",
+        #     "Kręcone",
+        #     "Afro",
+        #     ]
+        
+        # for x in DŁUGOŚĆ_CHOICES:
+        #     for y in KOLOR_CHOICES:
+        #         for z in POROWATOŚĆ_CHOICES:
+        #             for q in TYP_CHOICES:
+        #                 i = Włosy.objects.create()
+        #                 i.set_all(x,y,z,q)
+        #                 i.save()
+        
+        
         Długość = models.CharField(max_length=300, choices = DŁUGOŚĆ_CHOICES)
         Kolor = models.CharField(max_length=300, choices = KOLOR_CHOICES)
         Porowatość = models.CharField(max_length=100, choices = POROWATOŚĆ_CHOICES)
         Typ = models.CharField(max_length=300, choices = TYP_CHOICES)
-        Owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE, related_name="Użytkownik" )
+        Owner=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name="Typ_włosów", null=True, blank=True )
+        
 
                
         def __str__(self):

@@ -10,6 +10,22 @@ from wlosing.models import Włosy
 
 
 def check_password(password):
+    
+    """
+    Validates a password based on specified criteria.
+
+    This function validates a password based on the following criteria:
+    - The password must be at least 8 characters long.
+    - The password must contain both uppercase and lowercase characters.
+    - The password must contain at least one numeric digit.
+
+    Parameters:
+    password (str): The password to be validated.
+
+    Returns:
+    bool: True if the password meets the criteria, False otherwise.
+    """
+    
     le = len(password)
     
     try: 
@@ -39,6 +55,21 @@ def check_password(password):
   
 
 def check_email(mail):
+    
+    """
+Validates an email address based on specified criteria.
+
+This function validates an email address based on the following criteria:
+- The email must contain "@" and "." symbols.
+- There must be at least two characters after the last "." symbol and at most three characters.
+- The "@" symbol must appear before the last "." symbol.
+
+Parameters:
+mail (str): The email address to be validated.
+
+Returns:
+bool: True if the email address meets the criteria, False otherwise.
+"""
     
     try:
         
@@ -89,6 +120,25 @@ def logout_view(request):
     })    
     
 def signup (request):
+    
+    """
+Handles user sign-up process.
+
+This function handles the user sign-up process:
+- Retrieves user details from the request (username, password, email).
+- Checks if the username and email are not already in use.
+- Validates the email using the check_email function.
+- Validates the password using the check_password function.
+- Creates a new user using the User model.
+- Logs in the new user.
+
+Parameters:
+request: The request object containing user details.
+
+Returns:
+HttpResponseRedirect: Redirects to the "quest" page upon successful sign-up.
+"""
+    
     if request.method=="POST":
         name = request.POST['username']
         password = request.POST["password"]

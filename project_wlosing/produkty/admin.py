@@ -38,3 +38,6 @@ admin.site.register(Peeling)
 
 from .models import Rdz
 admin.site.register(Rdz)
+
+from .models import workingsKosmetyk
+admin.site.register(workingsKosmetyk)
