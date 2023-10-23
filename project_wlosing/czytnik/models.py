@@ -3,20 +3,29 @@ from django.db import models
 from produkty.models import Kosmetyk
 
 
+
 def make_list(s):
     '''zrobi listę elementów z długiego stringu'''
     li = str(s)
     li = li.split(', ')
+    print(f'makelist z modelu li= {li}')
     return li
-
-
+    
+    
 def tłumaczenie (skład):
     """bierze za argument listę składników
     tutaj będzie funkcja która będzie tłumaczyła skład"""
+    
+    skład = make_list(skład) 
+    print(f'skład w tłumaczeniu z modelu {skład}')
+    
     PL = []
     for x in skład:
         n = Składnik.meaning(x)
-        PL = PL.append(n)
+        print(f'n = {n}')
+        PL.append(n)
+        
+    print(f'pl = {PL}')
     return  PL
 
 
@@ -37,7 +46,10 @@ class Składnik(models.Model):
         self.INCI = inci
       def set_PL(self, pl):
         self.PL = pl
-    
+        
+      def __str__(self):
+          return f'{self.INCI} to {self.PL}'
+          
             
       def meaning (inci):
           
@@ -58,21 +70,35 @@ class Składnik(models.Model):
           return PL
       
 class Skład (models.Model):
+                
+       
         
     
         Kosmetyk = models.OneToOneField(Kosmetyk, on_delete=models.CASCADE, related_name="Skład",) 
         skład_INCI = models.CharField(max_length=300, )
-        skład_INCI_list = make_list(skład_INCI) 
-        """do przemylenia - dodać funkcję sczytania składu ze zdjęcia"""
-        skład_PL =  tłumaczenie(skład_INCI_list) 
-      
+        
+        skład_PL =  models.CharField(max_length=300, ) 
 
+        def __str__(self):
+            return f'Skład : {self.skład_INCI} CZYLI {self.skład_PL}'
+        
+
+        
         def get_skład_INCI(self):
             return self.skład_INCI
         def get_skład_PL(self):
             return self.skład_PL
         def set_skład_INCI(self, inci):
             self.skład_INCI = inci
-        def set_skład_PL(self, pl):
-            self.skład_PL = pl
+        def set_skład_PL(self, inci):
+            self.skład_PL = tłumaczenie(inci)
+        def set_kosmetyk(self, kosmetyk):
+            self.Kosmetyk=kosmetyk
+        def set_skład(kosmetyk, inci):
+            x=Skład()
+            x.set_kosmetyk(kosmetyk)
+            x.set_skład_INCI(inci)
+            x.set_skład_PL(inci)
+            x.save()
+            return x
             

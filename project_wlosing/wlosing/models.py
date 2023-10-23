@@ -85,7 +85,7 @@ class Włosy(models.Model):
         Kolor = models.CharField(max_length=300, choices = KOLOR_CHOICES)
         Porowatość = models.CharField(max_length=100, choices = POROWATOŚĆ_CHOICES)
         Typ = models.CharField(max_length=300, choices = TYP_CHOICES)
-        Owner=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name="Typ_włosów", null=True, blank=True )
+        Owner=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name="Typ_włosów", blank=True )
         
 
                

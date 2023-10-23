@@ -103,27 +103,26 @@ def obecnosc_ustal(r, n):
         True if product already exists in database and False if it is new.
         """
         
-        
+        n_mapping = {
+              "Szampon": lambda n: True if Szampon.objects.get(Nazwa=n) else False,
+               "Odżywka": lambda n: True if  Odżywka.objects.get(Nazwa=n) else False,
+               "Maska":  lambda n: True if Maska.objects.get(Nazwa=n) else False,
+               "Wcierka":  lambda n: True if Wcierka.objects.get(Nazwa=n) else False,
+               "Pianka": lambda n: True if  Pianka.objects.get(Nazwa=n) else False,
+               "Żel":  lambda n: True if Żel.objects.get(Nazwa=n) else False,
+               "Krem":  lambda n: True if Krem.objects.get(Nazwa=n) else False,
+               "Peeling": lambda n: True if  Peeling.objects.get(Nazwa=n) else False,
+               "Olej":  lambda n: True if Olej.objects.get(Nazwa=n) else False,
+               "Olejek":  lambda n: True if Olejek.objects.get(Nazwa=n) else False,
+                }
+            
+        f=n_mapping[r]
         
         try:
-            n_mapping = {
-          "Szampon": Szampon.objects.get(Nazwa=n),
-          "Odżywka": Odżywka.objects.get(Nazwa=n),
-          "Maska": Maska.objects.get(Nazwa=n),
-          "Wcierka": Wcierka.objects.get(Nazwa=n),
-          "Pianka": Pianka.objects.get(Nazwa=n),
-          "Żel": Żel.objects.get(Nazwa=n),
-          "Krem": Krem.objects.get(Nazwa=n),
-          "Peeling": Peeling.objects.get(Nazwa=n),
-          "Olej": Olej.objects.get(Nazwa=n),
-          "Olejek": Olejek.objects.get(Nazwa=n),
-            }
-            
-            x= n_mapping[r]
-        except: 
-            return False
-        return True
-
+            b=f(n)
+        except:
+            b=False
+        return b
 
 
 def index(request):
@@ -209,19 +208,34 @@ def addk(request):
             x = request.POST["Nazwa"]
             
             
-           
-            try:
-                obecnosc_ustal(r,x) == True
+            
+            if obecnosc_ustal(r,x) == True:
+
                                 
                 return render(request, "produkty/indexcopy.html", zmienna_ustal(
                               {
                                 "form": RdzForm(),
                                 "info": f"Upsss... Ten kosmetyk ({x}) jest już w naszej bazie. Możesz zasilić nim swoją kosmetyczkę"}))
                 
-            except:
+            else:
                 print("false1")
                 
                 pass
+           
+            # try:
+            #     print("a")
+            #     obecnosc_ustal(r,x) == True
+            #     print("b")
+                                
+            #     return render(request, "produkty/indexcopy.html", zmienna_ustal(
+            #                   {
+            #                     "form": RdzForm(),
+            #                     "info": f"Upsss... Ten kosmetyk ({x}) jest już w naszej bazie. Możesz zasilić nim swoją kosmetyczkę"}))
+                
+            # except:
+            #     print("false1")
+                
+            #     pass
             try:
             
                 post_mapping = {

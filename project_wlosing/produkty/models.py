@@ -6,23 +6,23 @@ from project_wlosing import settings
             
 class Rdz (models.Model):
                        
-            Rdz = models.CharField(max_length=300, unique=True)
+            Rodzaj = models.CharField(max_length=300, unique=True)
             
-            #""" input:
-                # for q in ["Szampon", "Odżywka", "Maska", "Olejek", "Olej", "Wcierka", "Żel", "Pianka", "Krem", "Peeling"]:
-                # k = Rdz ()
-                # k.set_Rdz(q)
-                # k.save() """
+            # """ input:
+            # for q in ["Szampon", "Odżywka", "Maska", "Olejek", "Olej", "Wcierka", "Żel", "Pianka", "Krem", "Peeling"]:
+            #     k = Rdz()
+            #     k.set_Rodzaj(q)
+            #     k.save() """
             
             
                 
-            def set_Rdz (self, rdz):
-                self.Rdz = rdz
-            def get_Rdz (self):
-                return self.Rdz
+            def set_Rodzaj (self, rdz):
+                self.Rodzaj= rdz
+            def get_Rodzaj(self):
+                return self.Rodzaj
             
             def __str__(self):
-                 return f"{self.Rdz} "
+                 return f"{self.Rodzaj}"
             
             def rdz_list(): 
                 return  ["Szampon", "Odżywka", "Maska", "Olejek", "Olej", "Wcierka", "Żel", "Pianka", "Krem", "Peeling"]
@@ -40,9 +40,7 @@ class Kosmetyk (models.Model):
         
            
 
-            
-            def get_Rodzaj (self):
-                return self.Rodzaj
+       
             def get_Marka (self):
                 return self.Marka
             def get_Nazwa (self):
@@ -138,7 +136,7 @@ class workingsKosmetyk(models.Model):
      nazwa= models.CharField(max_length=300)
      
      def __str__(self):
-         return f"pk = {self.pk}. kolejnosc = {self.kolejnosc}, {self.nazwa} "
+         return f"kolejnosc = {self.kolejnosc}, {self.nazwa}"
      
      def set_work(x) :
          """
@@ -277,7 +275,7 @@ class Szampon (Kosmetyk):
     ("Rypacz (mocny)", "Rypacz (mocny)"), 
     ]
 
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz",  on_delete=models.CASCADE, related_name="Szampony", default = "Szampon")
+    Rodzaj = models.ForeignKey(Rdz , to_field = "Rodzaj",  on_delete=models.CASCADE, related_name="Szampony", default = "Szampon")
     Moc = models.CharField ( max_length=300, choices = MOC_CHOICES)
 
     def get_Moc (self):
@@ -328,7 +326,7 @@ class O_M (Kosmetyk):
 class Odżywka (O_M):
  
 
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz", on_delete=models.CASCADE, related_name="Odżywki",  default="Odżywka")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj", on_delete=models.CASCADE, related_name="Odżywki",  default="Odżywka")
 
      
 
@@ -339,7 +337,7 @@ class Odżywka (O_M):
      
 class Maska (O_M):
         
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz", on_delete=models.CASCADE, related_name="Maski", default="Maska")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj", on_delete=models.CASCADE, related_name="Maski", default="Maska")
 
 
     
@@ -379,7 +377,7 @@ class Stylizator (Kosmetyk):
     
 class Żel (Stylizator):
     
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz",  on_delete=models.CASCADE, related_name="Żele",   default="Żel")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj",  on_delete=models.CASCADE, related_name="Żele",   default="Żel")
  
         
     class Meta:
@@ -388,7 +386,7 @@ class Żel (Stylizator):
      
 class Pianka (Stylizator):
     
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz", on_delete=models.CASCADE, related_name="Pianki",  default="Pianka")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj", on_delete=models.CASCADE, related_name="Pianki",  default="Pianka")
 
     
     class Meta:
@@ -398,7 +396,7 @@ class Pianka (Stylizator):
 class Krem (Stylizator):
     
    
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz",  on_delete=models.CASCADE, related_name="Kremy",  default="Krem")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj",  on_delete=models.CASCADE, related_name="Kremy",  default="Krem")
 
 
   
@@ -409,7 +407,7 @@ class Krem (Stylizator):
 
 class Olej (Kosmetyk):
     
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz", on_delete=models.CASCADE, related_name="Oleje",  default="Olej")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj", on_delete=models.CASCADE, related_name="Oleje",  default="Olej")
 
    
         
@@ -419,7 +417,7 @@ class Olej (Kosmetyk):
      
 class Olejek (Kosmetyk):
     
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz", on_delete=models.CASCADE, related_name="Olejki",   default="Olejek")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj", on_delete=models.CASCADE, related_name="Olejki",   default="Olejek")
 
   
     class Meta:
@@ -428,7 +426,7 @@ class Olejek (Kosmetyk):
      
 class Wcierka (Kosmetyk):
     
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz", on_delete=models.CASCADE, related_name="Wcierki",   default="Wcierka")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj", on_delete=models.CASCADE, related_name="Wcierki",   default="Wcierka")
 
   
         
@@ -438,7 +436,7 @@ class Wcierka (Kosmetyk):
      
 class Peeling (Kosmetyk):
     
-    Rodzaj = models.ForeignKey(Rdz, to_field = "Rdz", on_delete=models.CASCADE, related_name="Peelingi",   default="Peeling")
+    Rodzaj = models.ForeignKey(Rdz, to_field = "Rodzaj", on_delete=models.CASCADE, related_name="Peelingi",   default="Peeling")
    
 
     class Meta:
