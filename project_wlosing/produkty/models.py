@@ -157,44 +157,68 @@ class workingsKosmetyk(models.Model):
          q.nazwa = x.Nazwa
          q.kolejnosc = x
          q.save()
+         return q
          
          
          
          
-         
-     def check_b(name, nazwa, t):
+     def check_b(name, nazwa, t=0, lenght=None):
                
          """
          
-         checks the position in the alphabet between the the letters at t index in words "name" and "nazwa". 
+         checks which one of the words name and nazwa is earlier in the sorted list
+         by checking the position in the alphabet between the the letters at t index in words "name" and "nazwa". 
          If they are the same - the function uses it's recursion to check the following letter. 
-         
+         ()
      
          Parameters:
              name (str): name of cosmetic searched for
              nazwa (str): name of cosmetic choosen to compare by bisection search
              t(int): index of letter checked
+             *since the database does not allowe two cosmetics with the same name, we 
     
     
          Returns: 
-             True if name[t] is earlier in alphabet, False if name[t] is later in alphabet,
+             True if name[t] is earlier in alphabet(hencename is earlier than nazwa), 
+             False if name[t] is later in alphabet,
              recursion if letters are the same.
          
        
          """""
+         # almost the same words, but one longer
+         if t == 0:
+            
+             a= len(name)
+             b = len(nazwa)
+             
+             if a>b:
+                 lenght = a-2
+             else:
+                 lenght = b-2
+            
+         elif lenght == 1:
+             if len(name)<len(nazwa):
+                 return True
+             elif len(name)>len(nazwa):
+                 return False
+             else:
+                 pass
          
+            
          if name[t] < nazwa[t]:
+             
              return True
          
-         elif name[t] < nazwa[t] : 
+         elif name[t] > nazwa[t] : 
+             
              return False
          
          else: 
-             return workingsKosmetyk.check_b(name, nazwa, t+1)
+             return workingsKosmetyk.check_b(name, nazwa, t+1, lenght-1)
          
-     def bisection(name, lista, q):
+     def bisection(name, lista):
            
-         """
+       """
          Bisection search for cosmetics.
          
          The function performes the bisection search on alphabrticaly ordered workingsKosmetyk based on given name.
@@ -202,40 +226,56 @@ class workingsKosmetyk(models.Model):
          both checked first letters are equal,
          
          Parameters:
-             name (str): cosmetic's name
-             lista (list): list of all cosmetics in workingsKosmetyk (or cosmetics yet unrejected)
-             q (int): position of the letter beeing currently checked 
-             
-         Returns:
-             Kosmetyk
-         
-         """
-         
-         dlugosc = len(lista)
-         pozycja =  int(dlugosc/2) -1
-         I = name[q]
-         nazwa = ""
-         
-         
-         while name != nazwa:
-             
-             x = lista[pozycja]
-             nazwa = x.nazwa        
-             P = nazwa[q]
-             
-             if P>I:
-                 pozycja = pozycja-int(pozycja/2)
-             elif P<I:
-                 pozycja = pozycja+int(pozycja/2)
-             else:
-                 if workingsKosmetyk.check_b(name, nazwa, q+1 )== True:
-                     pozycja = pozycja-int(pozycja/2)
-                 
-                 else:
-                     pozycja = pozycja+int(pozycja/2)
-                     
-                     
-         return x
+         name (str): cosmetic's name
+         lista (list): list of all cosmetics in workingsKosmetyk (or cosmetics yet unrejected)
+         q (int): position of the letter beeing currently checked 
+        
+        Returns:
+        Kosmetyk
+        
+       """
+       lista_bi=lista.copy()
+
+       q=0
+       dlugosc = len(lista_bi)
+
+       if dlugosc >2 :
+           pozycja_l =  [int((dlugosc-1)/2)]
+       elif dlugosc ==2:
+           pozycja_l = [0,1]
+       else:
+           pozycja_l = [0]
+  
+       L = name[q]
+ 
+       for pozycja in pozycja_l:     
+           x = lista_bi[pozycja]
+           nazwa = x.nazwa        
+           P = nazwa[q]
+    
+           if name == nazwa:
+               return x.kolejnosc
+           
+           elif P>L:
+                del lista_bi[pozycja:]
+               
+           
+           elif P<L:
+                del lista_bi[:pozycja]
+  
+               
+           else:
+               if workingsKosmetyk.check_b(name, nazwa, q+1 )== True:
+                    del lista_bi[pozycja:]
+       
+                   
+               else:
+                    del lista_bi[:pozycja]
+           
+       return workingsKosmetyk.bisection(name, lista_bi)
+        
+    
+
          
      def get_PK(name):
          
@@ -255,8 +295,11 @@ class workingsKosmetyk(models.Model):
          """
          
          
-         lista = workingsKosmetyk.all()
-         PK = workingsKosmetyk.bisection(name, lista, q=0)
+         lista = workingsKosmetyk.all() 
+         kosmetyk = workingsKosmetyk.bisection(name, lista)
+         
+         PK = kosmetyk.id
+         
          return PK
          
                 
