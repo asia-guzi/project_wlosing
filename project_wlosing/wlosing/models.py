@@ -11,11 +11,6 @@ from django.http import HttpResponseRedirect
 
 
 
-# Create your models here.
-
-
-
-
 class Włosy(models.Model):
   
         DŁUGOŚĆ_CHOICES = [
@@ -44,48 +39,11 @@ class Włosy(models.Model):
             ]
         
         
-        
-        
-        # input:
-        # DŁUGOŚĆ_CHOICES = [
-        #     "Krótkie",
-        #     "Średnie",
-        #     "Długie",
-        #     ]
-
-        # KOLOR_CHOICES = [
-        #     "Blond",
-        #     "Szatynka", 
-        #     "Brunetka", 
-        #     "Rude", 
-        #     ]
-        # POROWATOŚĆ_CHOICES = [
-        #     "Wysokoporowate", 
-        #     "Średnioporowate", 
-        #     "Niskoporowate", 
-        #     ]
-        # TYP_CHOICES = [
-        #     "Proste",
-        #     "Falowane",
-        #     "Wurly",
-        #     "Kręcone",
-        #     "Afro",
-        #     ]
-        
-        # for x in DŁUGOŚĆ_CHOICES:
-        #     for y in KOLOR_CHOICES:
-        #         for z in POROWATOŚĆ_CHOICES:
-        #             for q in TYP_CHOICES:
-        #                 i = Włosy.objects.create()
-        #                 i.set_all(x,y,z,q)
-        #                 i.save()
-        
-        
         Długość = models.CharField(max_length=300, choices = DŁUGOŚĆ_CHOICES)
         Kolor = models.CharField(max_length=300, choices = KOLOR_CHOICES)
         Porowatość = models.CharField(max_length=100, choices = POROWATOŚĆ_CHOICES)
         Typ = models.CharField(max_length=300, choices = TYP_CHOICES)
-        Owner=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name="Typ_włosów", blank=True )
+        Owner=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name="typ_włosów", blank=True )
         
 
                
@@ -115,11 +73,30 @@ class Włosy(models.Model):
              self.set_Kolor(kolor)
              self.set_Porowatość(porowatosc)
              self.set_Typ(typ)
-            
-       
-            
-            
+
+        def __str__(self):
+
+            return f"Masz {self.Długość}, {self.Kolor}, {self.Porowatość}, {self.Typ} włosy."
         
+        def get_info(user, check = False):
+                                
+            a = "Upss... Nie uzupełniłaś podstawowych informacji o swoich włosach! Dodaj je aby móc w pełnin korzystać ze strony:"
+
+            if check == True:
+                try: 
+                    return (user.typ_włosów.get(), True)
+                
+                except: 
+                    return (a, False)
+            else:
+                try: 
+                    return user.typ_włosów.get()
+                
+                except: 
+                    return a
+                 
+                
+    
  
     
     

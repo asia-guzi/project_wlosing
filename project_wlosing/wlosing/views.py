@@ -1,47 +1,17 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponseRedirect
 from .models import Włosy #, Porowatość 
+from django.views import View
 
 # Porowatość
 from .forms import WłosyForm
 from produkty.models import Kosmetyk
 
-# Create your views here.
 
-def get_info (owner, request):
-    
-        """
-        Retrieves hair information for a given owner.
-    
-        This function retrieves hair information (length, color, porosity, and type) for the specified owner.
-        
-        Parameters:
-        owner (str): The owner of the hair for whom the information is requested.
-        request: The request object.
-    
-        Returns:
-        str: A string containing hair information for the specified owner.
-             If the owner has not provided basic hair information, a message prompting them to do so is returned.
-        """
-       
-        try: 
-            x = Włosy.objects.get(Owner=owner)
-            
-        except: 
-            
-            return "Upss... Nie uzupełniłaś podstawowych informacji o swoich włosach! Dodaj je aby móc w pełnin korzystać ze strony:"
-            
-        Długość = x.get_Długość()
-        Kolor = x.get_Kolor()
-        Porowatość = x.get_Porowatość()
-        Typ = x.get_Typ()
-                         
-        return f"Masz {Długość}, {Kolor}, {Porowatość}, {Typ} włosy."
 
-def index(request):
-    return render(request, "wlosing/index.html")
-
-def info(request):
+class wlosing_views(View):
+     
+    def inform(request, message = None):
        """
         Handles the user account view.
         
@@ -51,30 +21,38 @@ def info(request):
         request (HttpRequest): The HTTP request object.
         
         Returns:
-        HttpResponse: The HTTP response to be displayed (depending on existance of hair and cosmetica information.)
+        HttpResponse: The HTTP response to be displayed (depending on existance of hair and cosmetics information.)
         
         """
        if not request.user.is_authenticated:
            return render(request, "users/login.html")
       
        Owner = request.user
-       info = get_info(Owner, request)
-       kosmetyczka = Kosmetyk.objects.filter(Owner = Owner)
-       
-       if info == "Upss... Nie uzupełniłaś podstawowych informacji o swoich włosach! Dodaj je aby móc w pełnin korzystać ze strony:":
-           return render(request, "wlosing/info.html", {
-               "name" : Owner,
-               "opcja": info,
-               "kosmetyki" : kosmetyczka
-               }) 
-               
+       info, check_w = Włosy.get_info(Owner, True)    
+       kosmetyczka, check_k = Kosmetyk.get_kosmetyczka(Owner, True)
+       input_info={"name" : Owner}
+
+       if check_w == True:
+            input_info["opcja"] = info
        else:
-              
-           return render(request, "wlosing/info.html", {
-               "name" : Owner,
-               "info" : info,
-               "kosmetyki" : kosmetyczka
-               }) 
+            input_info["info"] = info
+       if check_k == True:
+            input_info["kosmetyki"] = kosmetyczka
+       if message:
+            input_info["message"] = message
+
+
+       return render(request, "wlosing/info.html", input_info)
+
+
+
+
+
+def index(request):
+    return render(request, "wlosing/index.html")
+
+def info(request):
+      return wlosing_views.inform(request)
 
 def quest (request):
 
@@ -83,7 +61,6 @@ def quest (request):
          Handles assigning a hair object to the user's account.
          
          This function allows authenticated users to add a current type of their hair to the account.
-         
          
          Parameters:
          request (HttpRequest): The HTTP request object.
@@ -97,17 +74,18 @@ def quest (request):
                return render(request, "users/login.html")
         
         if request.method == "POST":
-            form  = WłosyForm(request.POST)
+            form  = WłosyForm(request.POST) 
          
             if form.is_valid():
                 name = request.user
+                
                 dl = request.POST["Długość"]
                 ko = request.POST["Kolor"]
                 po = request.POST["Porowatość"]
                 ty = request.POST["Typ"]
                 
                 x = Włosy.objects.get(Długość=dl, Kolor=ko, Porowatość=po, Typ=ty)
-                
+               
                 try:
                     y = Włosy.objects.get(Owner=name)
                     y.Owner.remove(name)
@@ -116,24 +94,20 @@ def quest (request):
                 except:
                    
                     pass
-                    
-                """ z tym cos nie tak """
-            
+               
                 x.Owner.add(name)  
-                x.save()    
-                info = get_info(name, request)
+                info = Włosy.get_info(name)
                 return render (request, "wlosing/info.html", {
                     "name" : name ,
                     "info" : info,
-                    "kosmetyki" : Kosmetyk.objects.filter(Owner = request.user),
-                    
+                    "kosmetyki" : Kosmetyk.get_kosmetyczka(name)
                     })
     
        
-        else:
-            return render(request, "wlosing/quest.html", {
-                "form": WłosyForm()
-            })
+ 
+        return render(request, "wlosing/quest.html", {
+            "form": WłosyForm()
+        })
        
             
         

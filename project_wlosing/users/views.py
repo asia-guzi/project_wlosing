@@ -95,7 +95,7 @@ bool: True if the email address meets the criteria, False otherwise.
         return False
     
     
-def login_view(request):
+def login_view(request, message = None):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -103,13 +103,13 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            
-            return HttpResponseRedirect(reverse('wlosing:info'))
-        
+            return HttpResponseRedirect(reverse('wlosing:info')) 
         else:
-            return render(request, "users/login.html", {
-                "message": "Niewłaściwy login lub hasło."
-            })
+            message =  "Niewłaściwy login lub hasło."
+            
+    
+    if message:
+        return render(request, "users/login.html", {"message":message})
     else:
         return render(request, "users/login.html")
 

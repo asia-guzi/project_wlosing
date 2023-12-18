@@ -56,10 +56,8 @@ class workingsKosmetykTest(TestCase):
    
         f=True
         for x in tuples:
-            print(x)
             name, nazwa = x
             test = workingsKosmetyk.check_b(name, nazwa)
-            print(test)
             self.assertEqual(test,f)#, second())
             
         ff=False

@@ -5,9 +5,47 @@ from .forms import RdzForm, SzamponForm, OdżywkaForm, WcierkaForm, MaskaForm, P
 from produkty.models import Kosmetyk, Szampon, Odżywka, Wcierka, Maska, Peeling, Żel, Pianka, Krem, Olejek, Olej, Rdz, workingsKosmetyk
 from django import forms
 from wlosing.models import Włosy
-from wlosing.views import get_info
+from wlosing.views import wlosing_views
+from users.views import  login_view
+from django.views import View
 
- 
+def zmienna_ustal(d={}):
+
+    """
+    Determines product categories and their respective lists.
+    
+    This function determines product categories and their respective lists by iterating through available categories.
+    It uses the `lista_ustal` function to retrieve the product list for each category.
+    
+    Parameters:
+    d (dict): A dictionary to store product categories and their respective lists 
+    (initial elements od dictionary in the end are also shown on the view).
+    
+    Returns:
+    dict: A dictionary representing all cosmetics ever added to the project. 
+    It contains product categories as keys and their respective lists as values.
+    """
+
+    for r in Rdz.rdz_list():
+            
+            v = Kosmetyk.kosmetyk_list(r)
+            
+            if v != []:
+                d[r] = v
+            
+    return d
+class produkty_views(View):
+     
+    def pindex(request, info= None):
+        zmienna = zmienna_ustal()
+        zmienna["form"] = RdzForm()
+        zmienna["info"] = info
+
+        return render(request,"produkty/indexcopy.html", zmienna)
+    
+    def addk_view(request):
+         pass
+                   
 
 
 
@@ -30,31 +68,7 @@ def wydziel(x):
         return  y[-1]
 
    
-def zmienna_ustal(d):
-    
-        """
-        Determines product categories and their respective lists.
-        
-        This function determines product categories and their respective lists by iterating through available categories.
-        It uses the `lista_ustal` function to retrieve the product list for each category.
-        
-        Parameters:
-        d (dict): A dictionary to store product categories and their respective lists 
-        (initial elements od dictionary in the end are also shown on the view).
-        
-        Returns:
-        dict: A dictionary representing all cosmetics ever added to the project. 
-        It contains product categories as keys and their respective lists as values.
-        """
-    
-        for r in Rdz.rdz_list():
-             
-                v = Kosmetyk.kosmetyk_list(r)
-                
-                if v != []:
-                    d[r] = v
-                
-        return d
+
             
 def ustal_form(r):
         """
@@ -153,17 +167,12 @@ def index(request):
                 return render(request,"produkty/addk.html",{"form" : ustal_form(r)})
             else:
             
-                
-                return render(request,"produkty/indexcopy.html", 
-                    zmienna_ustal( {
-                    "info": "Upsss... coś poszło nie tak",
-                    "form": RdzForm(),
-                    }))
-                     
+                info = "Upsss... coś poszło nie tak"
+                return produkty_views.pindex(request, info) 
+
         else:
-                
-            varia = zmienna_ustal({"form" : RdzForm()})       
-            return render(request, "produkty/indexcopy.html", varia )
+                   
+            return produkty_views.pindex(request) 
                           
                
 
@@ -187,19 +196,17 @@ def addk(request):
         """
     
         if not request.user.is_authenticated:
-            return render(request, "users/login.html", {
-                "message" : "Zaloguj się, aby dodać produkt do bazy"
-                })
+
+            message = "Zaloguj się, aby dodać produkt do bazy"
+            return  login_view(request, message)
+
         
         try: 
             "r" in request.session
             
         except:
-                      
-            return render(request,"produkty/indexcopy.html", {
-                "form": RdzForm(),
-                "info": "Error - brak rodzaju"
-                })
+            return produkty_views.pindex(request, "Error - brak rodzaju")          
+         
         
         r = request.session["r"]
     
@@ -211,14 +218,12 @@ def addk(request):
             
             if obecnosc_ustal(r,x) == True:
 
-                                
-                return render(request, "produkty/indexcopy.html", zmienna_ustal(
-                              {
-                                "form": RdzForm(),
-                                "info": f"Upsss... Ten kosmetyk ({x}) jest już w naszej bazie. Możesz zasilić nim swoją kosmetyczkę"}))
+                info =  f"Upsss... Ten kosmetyk ({x}) jest już w naszej bazie. Możesz zasilić nim swoją kosmetyczkę"
+
+                return produkty_views.pindex(request, info)                 
+               
                 
             else:
-                print("false1")
                 
                 pass
            
@@ -274,9 +279,9 @@ def addk(request):
             k.save()
             workingsKosmetyk.set_work(k)
     
-            varia = zmienna_ustal({"form" : RdzForm(),"info" : "Baza zasilona", })
-           
-            return render(request, "produkty/indexcopy.html", varia )
+            info ="Baza zasilona" 
+            return produkty_views.pindex(request, info) 
+            
            
             
         else:
@@ -317,40 +322,25 @@ def jeden(request, Nazwa):
                 Owner = request.user
                 
                 try:
-                
-                    Owner.wKosmetyczce.get(Nazwa=nazwa)
-                    info = get_info(Owner, request)
-                    kosmetyczka = Kosmetyk.objects.filter(Owner = Owner)
-                
-                    return render(request, "wlosing/info.html", {
-                        "message" : "Sprawdź dokładniej, ten kosmetyk znajduje się już w Twojej koametyczce.",
-                        "name" : Owner,
-                        "info" : info,
-                        "kosmetyki" : kosmetyczka,
-                        })
-                               
+                    Owner.wKosmetyczce.get(Nazwa=nazwa)                           
                 except:
                         pass
-                        
+                else:
+                    mess =  "Sprawdź dokładniej, ten kosmetyk znajduje się już w Twojej koametyczce."
+                    return wlosing_views.inform(request, mess)       
                     
                 q = Kosmetyk.objects.get(Nazwa=nazwa)
                 q.set_Owner(Owner)
-                q.save()
+   
                 
+                info = Włosy.get_info(Owner)
+                kosmetyczka = Kosmetyk.get_kosmetyczka(Owner)
                 
-                info = get_info(Owner, request)
-                kosmetyczka = Kosmetyk.objects.filter(Owner = Owner)
-                
-                """tbc - zmiana wszedzie na x = Owner.wKosmetyczce.all()"""
+
     
-                    
-            return render(request, "wlosing/info.html", {
-                "message" : "Gratulacje, Kosmetyczka zasilona!",
-                "name" : Owner,
-                "info" : info,
-                "kosmetyki" : kosmetyczka,
-                })
-            
+                mess =  "Gratulacje, Kosmetyczka zasilona!"
+                return wlosing_views.inform(request, mess) 
+
         else:
             name = wydziel(Nazwa)
             name.capitalize()

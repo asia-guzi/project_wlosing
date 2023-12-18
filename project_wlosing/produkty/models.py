@@ -105,8 +105,21 @@ class Kosmetyk (models.Model):
                 return L
             
 
+            def get_kosmetyczka(user, check = False):
 
-
+                x = "Twoja kosmetyczka niestety jest pusta!"
+                y = user.wKosmetyczce.all()
+                if check == True:
+                    if y.exists():
+                        return (y, True)
+                    else:
+                        return (x, False)
+                else: 
+                    if y.exists():
+                        return y
+                    else:
+                        return x
+                        
                 
             class Meta:
                 

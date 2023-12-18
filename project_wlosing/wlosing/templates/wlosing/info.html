@@ -58,13 +58,13 @@
 
                         
                         
-                            {% for k in kosmetyki %}
+                        {% for k in kosmetyki %}
 
-                                <div class="col-6"> 
-                                    <a href="{% url 'produkty:jeden' k %}" class="list-group-item list-group-item-action">{{k}}</a>
+                            <div class="col-6"> 
+                                <a href="{% url 'produkty:jeden' k %}" class="list-group-item list-group-item-action">{{k}}</a>
 
-                                </div>
-                            {% endfor %} 
+                            </div>
+                        {% endfor %} 
 
                         <div class="col-12 text-center">
                                 
