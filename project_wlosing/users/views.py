@@ -25,32 +25,26 @@ def check_password(password):
     Returns:
     bool: True if the password meets the criteria, False otherwise.
     """
-    
+     #check if lenght of password is valid
     le = len(password)
-    
     try: 
-        le >= 8
-        
+        le >= 8    
     except: 
         return False
     
+    #check if any letter is uppercase
     if password.islower() == True :
         return False
-      
-    for p in password:
-       
-        W = True
+    
+    #check if there is any integer within the password
+    for p in password:       
         try: 
-            int(p)
-            break
-            
+            int(p)  
         except:
-            W = False
-        
-    if W == True:
-            return True
-    else:       
-        return False
+            pass
+        else:
+           return True
+    return False
         
   
 
@@ -144,20 +138,24 @@ HttpResponseRedirect: Redirects to the "quest" page upon successful sign-up.
         password = request.POST["password"]
         mail = request.POST['email']
        
+        #checks if the username is already in the base
         try:
-            user = User.objects.get(username=name)
-            return render(request, "users/signup.html", {
-                "error" : f"Podany login {name} jest już zajęty, wprowadź nowy login" })
+            user = User.objects.get(username=name)  
         except User.DoesNotExist:
             pass
+        else:
+             return render(request, "users/signup.html", {
+                "error" : f"Podany login {name} jest już zajęty, wprowadź nowy login" })
         
-               
+        
+  #tu możnaby pokombinować też z raise            
         try:
             User.objects.get(email=mail)
-            return render(request, "users/signup.html", {
-                "error" : "Upss, istnieje już konto związane z podanym adresem email. Spróbuj się na nie zalogować" })
         except:
             pass
+        else:
+            return render(request, "users/signup.html", {
+                "error" : "Upss, istnieje już konto związane z podanym adresem email. Spróbuj się na nie zalogować" })
         
         if check_email(mail)== True:
             pass

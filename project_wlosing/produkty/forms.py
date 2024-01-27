@@ -1,8 +1,7 @@
 from django import forms
 
 
-from .models import  Szampon, Odżywka, Maska, Olej, Olejek, Wcierka, Pianka, Żel, Krem, Peeling
-
+from .models import *
 
 # -*- coding: utf-8 -*-
 

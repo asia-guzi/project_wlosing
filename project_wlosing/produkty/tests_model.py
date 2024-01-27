@@ -1,5 +1,5 @@
 from django.test import TestCase
-from produkty.models import Kosmetyk, Szampon, Odżywka, Wcierka, Maska, Peeling, Żel, Pianka, Krem, Olejek, Olej, Rdz, workingsKosmetyk
+from produkty.models import *
 
 
 # Create your tests here.

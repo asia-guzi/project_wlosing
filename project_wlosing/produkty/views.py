@@ -1,14 +1,47 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponseRedirect
-from .forms import RdzForm, SzamponForm, OdżywkaForm, WcierkaForm, MaskaForm, PeelingForm, ŻelForm, PiankaForm, KremForm, OlejekForm, OlejForm 
+from .forms import *
 
-from produkty.models import Kosmetyk, Szampon, Odżywka, Wcierka, Maska, Peeling, Żel, Pianka, Krem, Olejek, Olej, Rdz, workingsKosmetyk
+from produkty.models import *
 from django import forms
 from wlosing.models import Włosy
 from wlosing.views import wlosing_views
 from users.views import  login_view
 from django.views import View
 
+
+def ustal_form(r, post= None):
+        """
+        Determines the appropriate form based on the given category.
+    
+        This function determines the appropriate form based on the given product category.
+        
+        Parameters:
+        r (str): The product category.
+    
+        Returns:
+        Form: An instance of the specific form based on the provided category.
+        """
+        form_mapping = {
+            "Szampon": SzamponForm,
+            "Odżywka": OdżywkaForm,
+            "Maska": MaskaForm,
+            "Wcierka": WcierkaForm,
+            "Pianka": PiankaForm,
+            "Żel": ŻelForm,
+            "Krem": KremForm,
+            "Peeling": PeelingForm,
+            "Olej": OlejForm,
+            "Olejek": OlejekForm,
+        }
+
+        
+        if post:
+             return form_mapping[r](post)
+  
+    
+        return form_mapping[r]()
+            
 def zmienna_ustal(d={}):
 
     """
@@ -43,8 +76,13 @@ class produkty_views(View):
 
         return render(request,"produkty/indexcopy.html", zmienna)
     
-    def addk_view(request):
-         pass
+    def addk_view(request, r, info = None):
+         zmienna={}
+         zmienna["form"]= ustal_form(r)
+         if info:
+              zmienna["info"] = info
+
+         return render(request,"produkty/addk.html",  zmienna)
                    
 
 
@@ -70,35 +108,7 @@ def wydziel(x):
    
 
             
-def ustal_form(r):
-        """
-        Determines the appropriate form based on the given category.
-    
-        This function determines the appropriate form based on the given product category.
-        
-        Parameters:
-        r (str): The product category.
-    
-        Returns:
-        Form: An instance of the specific form based on the provided category.
-        """
-        form_mapping = {
-            "Szampon": SzamponForm(),
-            "Odżywka": OdżywkaForm(),
-            "Maska": MaskaForm(),
-            "Wcierka": WcierkaForm(),
-            "Pianka": PiankaForm(),
-            "Żel": ŻelForm(),
-            "Krem": KremForm(),
-            "Peeling": PeelingForm(),
-            "Olej": OlejForm(),
-            "Olejek": OlejekForm()
-        }
-        
-        
-    
-        return form_mapping[r]
-            
+
 
 
 
@@ -117,26 +127,17 @@ def obecnosc_ustal(r, n):
         True if product already exists in database and False if it is new.
         """
         
-        n_mapping = {
-              "Szampon": lambda n: True if Szampon.objects.get(Nazwa=n) else False,
-               "Odżywka": lambda n: True if  Odżywka.objects.get(Nazwa=n) else False,
-               "Maska":  lambda n: True if Maska.objects.get(Nazwa=n) else False,
-               "Wcierka":  lambda n: True if Wcierka.objects.get(Nazwa=n) else False,
-               "Pianka": lambda n: True if  Pianka.objects.get(Nazwa=n) else False,
-               "Żel":  lambda n: True if Żel.objects.get(Nazwa=n) else False,
-               "Krem":  lambda n: True if Krem.objects.get(Nazwa=n) else False,
-               "Peeling": lambda n: True if  Peeling.objects.get(Nazwa=n) else False,
-               "Olej":  lambda n: True if Olej.objects.get(Nazwa=n) else False,
-               "Olejek":  lambda n: True if Olejek.objects.get(Nazwa=n) else False,
-                }
-            
-        f=n_mapping[r]
+                
+        n_mapping = Kosmetyk.kosmetyk_map(r)
         
         try:
-            b=f(n)
+            n_mapping.objects.get(Nazwa=n)
         except:
-            b=False
-        return b
+             return False
+        return True
+
+             
+               
 
 
 def index(request):
@@ -163,8 +164,8 @@ def index(request):
                 r=request.POST["Rdz"]
                 request.session["r"]= r
                 
-                 
-                return render(request,"produkty/addk.html",{"form" : ustal_form(r)})
+                return produkty_views.addk_view(request, r)
+           
             else:
             
                 info = "Upsss... coś poszło nie tak"
@@ -202,31 +203,24 @@ def addk(request):
 
         
         try: 
-            "r" in request.session
+           r = request.session["r"]
             
         except:
             return produkty_views.pindex(request, "Error - brak rodzaju")          
          
-        
-        r = request.session["r"]
-    
-                
+             
         if request.method == "POST":
             x = request.POST["Nazwa"]
-            
-            
-            
+       
             if obecnosc_ustal(r,x) == True:
 
                 info =  f"Upsss... Ten kosmetyk ({x}) jest już w naszej bazie. Możesz zasilić nim swoją kosmetyczkę"
-
                 return produkty_views.pindex(request, info)                 
                
                 
             else:
-                
                 pass
-           
+            """sprawdzić czy form is valid"""
             # try:
             #     print("a")
             #     obecnosc_ustal(r,x) == True
@@ -241,28 +235,15 @@ def addk(request):
             #     print("false1")
                 
             #     pass
-            try:
+            q = ustal_form(r, request.POST)
+
+            # if q.is_valid():
+                     
+            # # except:
             
-                post_mapping = {
-                    "Szampon": SzamponForm(request.POST),
-                    "Odżywka": OdżywkaForm(request.POST),
-                    "Maska": MaskaForm(request.POST),
-                    "Wcierka": WcierkaForm(request.POST),
-                    "Pianka": PiankaForm(request.POST),
-                    "Żel": ŻelForm(request.POST),
-                    "Krem": KremForm(request.POST),
-                    "Peeling": PeelingForm(request.POST),
-                    "Olej": OlejForm(request.POST),
-                    "Olejek": OlejekForm(request.POST)
-                }
-                
-                q = post_mapping[r]
-                
-            except:
-            
-                 return render(request,"produkty/addk.html", {
-                     "form": ustal_form(request.session["r"]),
-                     "info": "Upsss... coś poszło nie tak"})
+            #      return render(request,"produkty/addk.html", {
+            #          "form": ustal_form(request.session["r"]),
+            #          "info": "Upsss... coś poszło nie tak"})
                 
             
                 
@@ -270,26 +251,21 @@ def addk(request):
                pass
          
             else: 
-                 return render(request,"produkty/addk.html", {
-                     "form": ustal_form(r),
-                     "info": "Upsss... coś poszło nie tak"})
-            
+                 info = "Upsss... coś poszło nie tak"
+                 return produkty_views.addk_view(request, r, info) 
+
             k = q.save()
             k.set_Owner(request.user)
-            k.save()
             workingsKosmetyk.set_work(k)
     
             info ="Baza zasilona" 
             return produkty_views.pindex(request, info) 
             
-           
-            
+   
         else:
-           
-            return render(request,"produkty/add.html", {
-                "form": ustal_form(r),
-                "info": "nie ta metoda"
-              })
+            info = "nie ta metoda"
+            return produkty_views.addk_view(request, r, info) 
+
         
 def jeden(request, Nazwa):
     
@@ -307,9 +283,9 @@ def jeden(request, Nazwa):
         """
         
         if not request.user.is_authenticated:
-                return render(request, "users/login.html", {
-                    "message" : "Zaloguj się, aby dodać produkt do swojej kosmetyczki"
-                    })
+                return  login_view(request, "Zaloguj się, aby dodać produkt do swojej kosmetyczki")
+
+              
         
         class Roboczy (forms.Form):
             N = forms.CharField(widget=forms.HiddenInput(), initial= Nazwa)
@@ -331,13 +307,7 @@ def jeden(request, Nazwa):
                     
                 q = Kosmetyk.objects.get(Nazwa=nazwa)
                 q.set_Owner(Owner)
-   
-                
-                info = Włosy.get_info(Owner)
-                kosmetyczka = Kosmetyk.get_kosmetyczka(Owner)
-                
-
-    
+     
                 mess =  "Gratulacje, Kosmetyczka zasilona!"
                 return wlosing_views.inform(request, mess) 
 

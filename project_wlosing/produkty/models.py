@@ -1,5 +1,10 @@
 from django.db import models
 from project_wlosing import settings
+from django.contrib.auth.models import User
+from typing import Type, Tuple
+from django.db.models.query import QuerySet
+from django.contrib.auth.models import User
+
 
 
          
@@ -7,15 +12,7 @@ from project_wlosing import settings
 class Rdz (models.Model):
                        
             Rodzaj = models.CharField(max_length=300, unique=True)
-            
-            # """ input:
-            # for q in ["Szampon", "Odżywka", "Maska", "Olejek", "Olej", "Wcierka", "Żel", "Pianka", "Krem", "Peeling"]:
-            #     k = Rdz()
-            #     k.set_Rodzaj(q)
-            #     k.save() """
-            
-            
-                
+               
             def set_Rodzaj (self, rdz):
                 self.Rodzaj= rdz
             def get_Rodzaj(self):
@@ -24,23 +21,13 @@ class Rdz (models.Model):
             def __str__(self):
                  return f"{self.Rodzaj}"
             
-            def rdz_list(): 
-                return  ["Szampon", "Odżywka", "Maska", "Olejek", "Olej", "Wcierka", "Żel", "Pianka", "Krem", "Peeling"]
-
-
-     
+            def rdz_list(cls): 
+                return  [r.Rodzaj for r in cls.all()]
 class Kosmetyk (models.Model):
-    
-            
- 
             Marka = models.CharField(max_length=300)
             Nazwa = models.CharField(max_length=300)
             Owner = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="wKosmetyczce", blank = True)
-            
-        
-           
-
-       
+          
             def get_Marka (self):
                 return self.Marka
             def get_Nazwa (self):
@@ -60,8 +47,21 @@ class Kosmetyk (models.Model):
             def __str__(self):
                  return f"{self.Marka}, {self.Nazwa} "
              
-                
-            def kosmetyk_list(r=None):
+            def kosmetyk_map(cls, r):
+                 mapping = {
+                            "Szampon": Szampon,
+                            "Odżywka": Odżywka,
+                            "Maska": Maska,
+                            "Wcierka": Wcierka,
+                            "Pianka": Pianka,
+                            "Żel": Żel,
+                            "Krem": Krem,
+                            "Peeling": Peeling,
+                            "Olej": Olej,
+                            "Olejek": Olejek,
+                        }  
+                 return mapping[r]   
+            def kosmetyk_list(r):
                 """
                 Determines the appropriate cosmetics list based on given cathegory.
 
@@ -74,51 +74,32 @@ class Kosmetyk (models.Model):
                 Returns:
                 Form: An instance of the specific form based on the provided category.
                 """
-                if r != None:
-                    try:
-                        mapping = {
-                            "Szampon": Szampon.objects.all(),
-                            "Odżywka": Odżywka.objects.all(),
-                            "Maska": Maska.objects.all(),
-                            "Wcierka": Wcierka.objects.all(),
-                            "Pianka": Pianka.objects.all(),
-                            "Żel": Żel.objects.all(),
-                            "Krem": Krem.objects.all(),
-                            "Peeling": Peeling.objects.all(),
-                            "Olej": Olej.objects.all(),
-                            "Olejek": Olejek.objects.all(),
-                        }
-                        
-                        k = mapping[r]
-                    except:
-                        return []
-                else:
-                    k = Kosmetyk.objects.all()
-                    
-                    
-                L=[]
-                for x in k:
-                                
-                    m = x.get_Marka()
-                    n = x.get_Nazwa()
-                    L.append(f"{m}, {n}")
-                return L
+                
+                try:
+                    k = Kosmetyk.kosmetyk_map(r).objects.all()
+                except:
+                    return []             
+            
+                return [f"{x.get_Marka()}, {x.get_Nazwa()}" for x in k]
             
 
-            def get_kosmetyczka(user, check = False):
+            def get_kosmetyczka(cls, user: User, check: bool = False) -> Tuple[QuerySet, bool]:
 
-                x = "Twoja kosmetyczka niestety jest pusta!"
-                y = user.wKosmetyczce.all()
-                if check == True:
-                    if y.exists():
-                        return (y, True)
-                    else:
-                        return (x, False)
-                else: 
-                    if y.exists():
-                        return y
+                try:
+                    y = user.wKosmetyczce.all()
+                    print("y = ", y)
+                except:
+                    x = "Twoja kosmetyczka niestety jest pusta!"
+                    if check:
+                        return x, False
                     else:
                         return x
+                else:
+                    if check:
+                        return y, True
+                    else:
+                        return y
+
                         
                 
             class Meta:
@@ -145,12 +126,22 @@ class workingsKosmetyk(models.Model):
      
      """unregistered model"""
      
-     kolejnosc = models.OneToOneField(Kosmetyk, on_delete=models.CASCADE)#, Primary_key=True)
+     kolejnosc = models.OneToOneField(Kosmetyk, on_delete=models.CASCADE)
      nazwa= models.CharField(max_length=300)
+
      
      def __str__(self):
          return f"kolejnosc = {self.kolejnosc}, {self.nazwa}"
-     
+     def get_kolejnosc (self):
+        return self.kolejnosc
+     def get_nazwa (self):
+        return self.nazwa
+
+     def set_kolejnosc(self, kosmetyk):
+        self.kolejnosc = kosmetyk
+     def set_nazwa (self, n):
+        self.nazwa = n
+
      def set_work(x) :
          """
          Sets the new workingsKosmetyk based on the provided Kosmetyk item.
@@ -165,10 +156,9 @@ class workingsKosmetyk(models.Model):
          Returns: None
        
          """""
-         x = Kosmetyk.objects.get(Nazwa=x.Nazwa)
          q = workingsKosmetyk()
-         q.nazwa = x.Nazwa
-         q.kolejnosc = x
+         q.set_kolejnosc(x)  
+         q.set_nazwa (f"{x.Nazwa}.{x.Marka}")
          q.save()
          return q
          

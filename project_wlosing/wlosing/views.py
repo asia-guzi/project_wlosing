@@ -11,7 +11,7 @@ from produkty.models import Kosmetyk
 
 class wlosing_views(View):
      
-    def inform(request, message = None):
+    def inform(request):
        """
         Handles the user account view.
         
@@ -29,7 +29,7 @@ class wlosing_views(View):
       
        Owner = request.user
        info, check_w = Włosy.get_info(Owner, True)    
-       kosmetyczka, check_k = Kosmetyk.get_kosmetyczka(Owner, True)
+       kosmetyczka, check_k = get_kosmetyczka(cls = Kosmetyk, user = Owner, check = True)
        input_info={"name" : Owner}
 
        if check_w == True:
@@ -38,8 +38,9 @@ class wlosing_views(View):
             input_info["info"] = info
        if check_k == True:
             input_info["kosmetyki"] = kosmetyczka
-       if message:
-            input_info["message"] = message
+       else:
+            input_info["message"] = kosmetyczka
+      
 
 
        return render(request, "wlosing/info.html", input_info)
@@ -83,6 +84,8 @@ def quest (request):
                 ko = request.POST["Kolor"]
                 po = request.POST["Porowatość"]
                 ty = request.POST["Typ"]
+
+                
                 
                 x = Włosy.objects.get(Długość=dl, Kolor=ko, Porowatość=po, Typ=ty)
                
@@ -96,13 +99,9 @@ def quest (request):
                     pass
                
                 x.Owner.add(name)  
-                info = Włosy.get_info(name)
-                return render (request, "wlosing/info.html", {
-                    "name" : name ,
-                    "info" : info,
-                    "kosmetyki" : Kosmetyk.get_kosmetyczka(name)
-                    })
-    
+
+                return wlosing_views.inform(request)
+           
        
  
         return render(request, "wlosing/quest.html", {

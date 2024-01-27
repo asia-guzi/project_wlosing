@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9f367f68-1170-482f-9cb7-577e3a9a76d4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../input.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../czytnik/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/../czytnik/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../czytnik/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../czytnik/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/../db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../produkty/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/../produkty/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../produkty/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/../produkty/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../produkty/migrations/0002_alter_maska_peh_alter_odżywka_peh.py" beforeDir="false" afterPath="$PROJECT_DIR$/../produkty/migrations/0002_alter_maska_peh_alter_odżywka_peh.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../produkty/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../produkty/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../produkty/tests_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/../produkty/tests_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../produkty/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../produkty/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project_wlosing/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../project_wlosing/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../users/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wlosing/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/../wlosing/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wlosing/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../wlosing/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2bXwXwAjwMZctS18fexKUNgVbVn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/User/Desktop/Python/project_wlosing/project_wlosing",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9f367f68-1170-482f-9cb7-577e3a9a76d4" name="Changes" comment="" />
+      <created>1706374774864</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1706374774864</updated>
+      <workItem from="1706374776021" duration="187000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
