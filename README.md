@@ -2,7 +2,7 @@
 
 As part of diving into Python, I have been creating  "Project_włosing", a platform dedicated to hair care enthusiasts. This project main purpose is to boost my Python programming skills while practising and getting used to object-oriented programming, abstraction, and decomposition. It has also been an opportunity to experiment with some algorithms, think out the scalability issue and considering the Big O notation at the same time. The project is built using the Django framework and consisted of:
 - Functions.
-- Models representing hair types (categorized by colour, length, porosity, and curl level) and cosmetic products. Most models include specific methods[^1].
+- Models representing hair types (categorized by colour, length, porosity, and curl level) and cosmetic products. Most models include specific methods.
 - Functions collaborating with HTML templates and styles from Bootstrap components to render the application on the server.
 - Unit testing procedures for models, methods, and functions.
 
@@ -17,6 +17,3 @@ Version control was achieved by tracking of files, and commiting subsequent code
 This project provided me with an experience in Python, Django, and various programming concepts, practise of object-oriented principles, abstraction, and algorithmic considerations, as well as progress in unit testing. It also illustrates practical skills in database management, front-end development using HTML and Bootstrap, and version control with Git.
 
 
-
-[^1]: Please refere to the database model.
-![image](https://github.com/asia-guzi/project_wlosing/assets/128618644/22231866-9bce-4f6a-8daa-82995a14ed7f)
