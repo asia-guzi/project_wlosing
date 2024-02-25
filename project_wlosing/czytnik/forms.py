@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from .models import Skład
+from .models import Sklad
 from django import forms
 
-
         
-class SkładForm (forms.ModelForm):
+class SkladForm (forms.ModelForm):
     class Meta:
-        model = Skład
-        fields = ["skład_INCI"]
+        model = Sklad
+        fields = ["sklad_inci"]

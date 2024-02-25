@@ -1,34 +1,32 @@
-from django.test import TestCase
-
 # Create your tests here.
 
-
 def check_password(password):
+
     le = len(password)
     
-    try: 
-        le >= 8
+    if le >= 8:
+        pass
         
-    except: 
+    else:
         return False
     
-    if password.islower() == True :
+    if password.islower():
         return False
         
-           
-    for p in password:
-        W = True
+    # tu możliwe że warunek - w powinno byc odwrocone w= false ,
+    # no chyba daje blad gdy jest cyfra, a nie gdy jej nie ma  - tbc
+    for pasw in password:
+        w = True
         try: 
-            int(p)
-            
+            int(pasw)
+
+        except ValueError:
+            w = False
+        else:
             break
-            
-        except:
-            W = False
-        
-        
-    if W == True:
-            return True
+
+    if w:
+        return True
     else:       
         return False
         
@@ -43,21 +41,19 @@ def check_email(mail):
         c = len(mail)-b-1
         print("war 1 - ok")
         
-        
-    except:
+    except ValueError:
         return False
-    
-    
-    print(b , c)
+
+    print(b, c)
           
-    if c>= 2 and c<=3:
-       print("war2 - ok")
-       pass
+    if 2 <= c <= 3:
+        print("war2 - ok")
+        pass
               
     else:
         return False
     
-    if a<b:
+    if a < b:
         print("wa3 - ok")
         pass
     else:
@@ -65,23 +61,23 @@ def check_email(mail):
     
     return True
 
-em = {"ola" : "Nieprawidłowy", 
+
+em = {"ola": "Nieprawidłowy",
       "ola@": "Nieprawidłowy", 
-      "ola@." : "Nieprawidłowy",
-      "ola.com" : "Nieprawidłowy", 
+      "ola@.": "Nieprawidłowy",
+      "ola.com": "Nieprawidłowy",
       "ola.mail@com": "Nieprawidłowy", 
-      "ola.mail@pl" : "Nieprawidłowy",
-      "ola@mail.c" : "Nieprawidłowy", 
+      "ola.mail@pl": "Nieprawidłowy",
+      "ola@mail.c": "Nieprawidłowy",
       "ola@mail.com": "Prawidłowy", 
       
       }
-pas = {"example":"Nieprawidłowy",
-       "example8":"Nieprawidłowy",
-       "Exa8":"Nieprawidłowy",
-       "exr9mple":"Nieprawidłowy",
-       "exampleE":"Nieprawidłowy",
-       "examp8leE":"Prawidłowy",
-            
+pas = {"example": "Nieprawidłowy",
+       "example8": "Nieprawidłowy",
+       "Exa8": "Nieprawidłowy",
+       "exr9mple": "Nieprawidłowy",
+       "exampleE": "Nieprawidłowy",
+       "examp8leE": "Prawidłowy"
        }
 
 for e in em.keys():

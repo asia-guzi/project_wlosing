@@ -1,20 +1,19 @@
 from django.test import TestCase
 
+from .models import Wlosy
 
-from .models import Włosy
-
-from .forms import WłosyForm
 
 # models test
-class WłosyTest(TestCase):
+class WlosyTest(TestCase):
 
-    def create_włosy(self, Długość="Krótkie", Kolor="Blond", Porowatość="Niskoporowate", Typ="Proste"):
-        return Włosy.objects.create(Długość=Długość, Kolor=Kolor, Porowatość=Porowatość, Typ=Typ)
+    @staticmethod
+    def create_wlosy(dlugosc="Krótkie", kolor="Blond", porowatosc="Niskoporowate", typ="Proste"):
+        return Wlosy.objects.create(dlugosc=dlugosc, kolor=kolor, porowatosc=porowatosc, typ=typ)
     
-    def test_włosy_creation(self):
-            w = self.create_włosy()
-            self.assertTrue(isinstance(w, Włosy))
-            self.assertEqual(w.__str__(), f"Masz {w.Długość}, {w.Kolor}, {w.Porowatość}, {w.Typ} włosy. ")
-   
+    def test_wlosy_creation(self):
+        w = self.create_wlosy()
+        self.assertTrue(isinstance(w, Wlosy))
+        self.assertEqual(w.__str__(), f"Masz {w.dlugosc}, {w.kolor}, {w.porowatosc}, {w.typ} włosy. ")
+
 
   

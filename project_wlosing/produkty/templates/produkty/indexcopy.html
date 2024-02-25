@@ -204,11 +204,11 @@
           <div class="col-5">
             <div class="accordion-item">
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTen" aria-expanded="false" aria-controls="flush-collapseTen">
                   Oleje
                 </button>
               </h2>
-              <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+              <div id="flush-collapseTen" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                     {% if Olej %}
 
@@ -258,33 +258,31 @@
           </div>
           
           <div class="col-5">
-                        <div class="accordion-item">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
-                  Peelingi
-                </button>
-              </h2>
+              <div class="accordion-item">
+               <h2 class="accordion-header">
+                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
+                   Peelingi
+                 </button>
+               </h2>
               <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                     {% if Peeling %}
 
-                    <div class="list-group">
-                        {% for r in Peeling %}
-                            <a href="{% url 'produkty:jeden' r %}" class="list-group-item list-group-item-action">{{r}}</a>
-                        
-                        {% endfor %}
+                        <div class="list-group">
+                            {% for r in Peeling %}
+                                <a href="{% url 'produkty:jeden' r %}" class="list-group-item list-group-item-action">{{r}}</a>
 
-                    </div>
+                            {% endfor %}
+                        </div>
 
-                {% else %}
-                    Brak peelingów
-                {% endif %}
+                    {% else %}
+                        Brak peelingów
+                    {% endif %}
 
                 </div>
               </div>
-            </div>
-
-          </div>         
+           </div>
+          </div>
           <div class="col-5">
             <div class="accordion-item">
               <h2 class="accordion-header">

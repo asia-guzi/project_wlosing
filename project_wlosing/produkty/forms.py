@@ -1,95 +1,92 @@
-from django import forms
-
 
 from .models import *
+from django import forms
 
 # -*- coding: utf-8 -*-
-
 
 
 class RdzForm(forms.Form):
     
     RODZAJ_CHOICES = [
-    ("Szampon", "Szampon"), 
-    ("Odżywka","Odżywka"), 
-    ("Maska", "Maska"), 
-    ("Olejek","Olejek"), 
-    ("Olej","Olej"), 
-    ("Wcierka","Wcierka"), 
-    ("Żel","Żel"), 
-    ("Pianka","Pianka"), 
-    ("Krem","Krem"), 
-    ("Peeling","Peeling")]
+        ("Szampon", "Szampon"),
+        ("Odzywka", "Odzywka"),
+        ("Maska", "Maska"),
+        ("Olejek", "Olejek"),
+        ("Olej", "Olej"),
+        ("Wcierka", "Wcierka"),
+        ("Zel", "Zel"),
+        ("Pianka", "Pianka"),
+        ("Krem", "Krem"),
+        ("Peeling", "Peeling")]
     
-    Rdz = forms.ChoiceField(choices = RODZAJ_CHOICES)
+    Rdz = forms.ChoiceField(choices=RODZAJ_CHOICES)
     
  
 class SzamponForm (forms.ModelForm):
    
     class Meta:
         model = Szampon
-        fields = ["Marka", "Nazwa", "Moc", ]
+        fields = ["marka", "nazwa", "moc", ]
       
         
-class OdżywkaForm (forms.ModelForm):
+class OdzywkaForm (forms.ModelForm):
     
     class Meta:
-        model = Odżywka
-        fields = ["Marka", "Nazwa", "PEH", ]
+        model = Odzywka
+        fields = ["marka", "nazwa", "PEH", ]
     
             
 class MaskaForm (forms.ModelForm):
 
     class Meta:
         model = Maska
-        fields = [ "Marka", "Nazwa", "PEH", ]
+        fields = ["marka", "nazwa", "PEH", ]
         
-class ŻelForm (forms.ModelForm):
+
+class ZelForm (forms.ModelForm):
 
     class Meta:
-        model = Żel
-        fields = ["Marka", "Nazwa", "Hold", ]
+        model = Zel
+        fields = ["marka", "nazwa", "hold", ]
         
+
 class PiankaForm (forms.ModelForm):
 
     class Meta:
         model = Pianka
-        fields = ["Marka", "Nazwa", "Hold", ]
+        fields = ["marka", "nazwa", "hold", ]
         
+
 class KremForm (forms.ModelForm):
     
     class Meta:
         model = Krem
-        fields = [ "Marka", "Nazwa", "Hold", ]
+        fields = ["marka", "nazwa", "hold", ]
         
+
 class OlejekForm (forms.ModelForm):
 
     class Meta:
         model = Olejek
-        fields = ["Marka", "Nazwa", ]
+        fields = ["marka", "nazwa", ]
         
+
 class OlejForm (forms.ModelForm):
 
     class Meta:
         model = Olej
-        fields = ["Marka", "Nazwa", ]
+        fields = ["marka", "nazwa", ]
         
+
 class WcierkaForm (forms.ModelForm):
 
     class Meta:
         model = Wcierka
-        fields = ["Marka", "Nazwa", ]
+        fields = ["marka", "nazwa", ]
         
+
 class PeelingForm (forms.ModelForm):
 
     class Meta:
         model = Peeling
-        fields = ["Marka", "Nazwa", ]
-        
-        
-
-        
-
-        
-    
-        
+        fields = ["marka", "nazwa", ]

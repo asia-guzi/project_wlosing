@@ -1,104 +1,117 @@
 from django.db import models
 
 from produkty.models import Kosmetyk
+from typing import List
 
 
+def make_list(s: str) -> list:
+    """
+    Converts a comma-separated string into a list of elements.
 
-def make_list(s):
-    '''zrobi listę elementów z długiego stringu'''
-    li = str(s)
-    li = li.split(', ')
-    print(f'makelist z modelu li= {li}')
-    return li
+    :param s: A comma-separated string containing elements.
+    :type s: str
+    :return: A list containing individual elements extracted from the input string.
+    :rtype: list
+    """
+
+    pass
     
     
-def tłumaczenie (skład):
-    """bierze za argument listę składników
-    tutaj będzie funkcja która będzie tłumaczyła skład"""
+def tlumaczenie(sklad: str) -> List[str]:
+    """
+    Function performing the translation of the ingredients.
+
+    :param sklad: input sklad.
+    :type: str
+
+    :return: A list of translated ingredients.
+    :rtype: list
+    """
     
-    skład = make_list(skład) 
-    print(f'skład w tłumaczeniu z modelu {skład}')
+    sklad = make_list(sklad)
+    print(f'sklad w tłumaczeniu z modelu {sklad}')
     
     PL = []
-    for x in skład:
-        n = Składnik.meaning(x)
+    for x in sklad:
+        n = Skladnik.meaning(x)
         print(f'n = {n}')
         PL.append(n)
         
     print(f'pl = {PL}')
-    return  PL
+    return PL
 
 
-class Składnik(models.Model):
+class Skladnik(models.Model):
   
-      INCI = models.CharField(max_length=300)
-      PL = models.CharField(max_length=300)
-           
-      
-      
-      
-          
-      def get_INCI(self):
-        return self.INCI
-      def get_PL(self):
-        return self.PL
-      def set_INCI(self, inci):
-        self.INCI = inci
-      def set_PL(self, pl):
-        self.PL = pl
-        
-      def __str__(self):
-          return f'{self.INCI} to {self.PL}'
-          
-            
-      def meaning (inci):
-          
-          
-          """Bierze za argument skłanik
-          do każdego składnika INCI z przypisuje wartosć PL
-          zwraca pl"""
-          
-          try:
-              n = Składnik.objects.get(INCI=inci)
-          
-          except:
-              return "Error - brak składnika w bazie"
-          
-          PL = n.get_PL()
-           
-          
-          return PL
-      
-class Skład (models.Model):
-                
-       
-        
-    
-        Kosmetyk = models.OneToOneField(Kosmetyk, on_delete=models.CASCADE, related_name="Skład",) 
-        skład_INCI = models.CharField(max_length=300, )
-        
-        skład_PL =  models.CharField(max_length=300, ) 
+    inci = models.CharField(max_length=100)
+    pl = models.CharField(max_length=100)
 
-        def __str__(self):
-            return f'Skład : {self.skład_INCI} CZYLI {self.skład_PL}'
-        
+    def get_inci(self):
+        return self.inci
 
-        
-        def get_skład_INCI(self):
-            return self.skład_INCI
-        def get_skład_PL(self):
-            return self.skład_PL
-        def set_skład_INCI(self, inci):
-            self.skład_INCI = inci
-        def set_skład_PL(self, inci):
-            self.skład_PL = tłumaczenie(inci)
-        def set_kosmetyk(self, kosmetyk):
-            self.Kosmetyk=kosmetyk
-        def set_skład(kosmetyk, inci):
-            x=Skład()
-            x.set_kosmetyk(kosmetyk)
-            x.set_skład_INCI(inci)
-            x.set_skład_PL(inci)
-            x.save()
-            return x
-            
+    def get_pl(self):
+        return self.pl
+
+    def set_inci(self, inci):
+        self.inci = inci
+
+    def set_pl(self, pl):
+        self.pl = pl
+
+    def __str__(self):
+        return f'{self.inci} to {self.pl}'
+
+    @staticmethod
+    def meaning(inci: str) -> str:
+        """
+        Assigns a value 'pl' to each ingredient 'inci'.
+
+        :param inci: Ingredient whose meaning is to be determined.
+        :type inci: str
+        :return: The meaning of the ingredient 'inci'.
+        :rtype: str
+        """
+
+        try:
+            n = Skladnik.objects.get(inci=inci)
+
+        except Skladnik.DoesNotExist:
+            return "Error - brak składnika w bazie"
+
+        PL = n.get_pl()
+
+        return PL
+      
+
+class Sklad (models.Model):
+
+    kosmetyk = models.OneToOneField(Kosmetyk, on_delete=models.CASCADE, related_name="Sklad", )
+    sklad_inci = models.CharField(max_length=100)
+    sklad_pl = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'Sklad : {self.sklad_inci} CZYLI {self.sklad_pl}'
+
+    def get_sklad_inci(self):
+        return self.sklad_inci
+
+    def get_sklad_pl(self):
+        return self.sklad_pl
+
+    def set_sklad_inci(self, inci):
+        self.sklad_inci = inci
+
+    def set_sklad_pl(self, inci):
+        self.sklad_pl = tlumaczenie(inci)
+
+    def set_kosmetyk(self, kosmetyk):
+        self.kosmetyk = kosmetyk
+
+    @staticmethod
+    def set_sklad(kosmetyk, inci):
+        x = Sklad()
+        x.set_kosmetyk(kosmetyk)
+        x.set_sklad_inci(inci)
+        x.set_sklad_pl(inci)
+        x.save()
+        return x

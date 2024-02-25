@@ -3,11 +3,9 @@
 from django.urls import path
 from . import views
 from django.contrib import admin
-  
-
-app_name="users"
 
 
+app_name = "users"
 
 urlpatterns = [
     
@@ -15,4 +13,3 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("signup", views.signup, name="signup"),
 ]
-
